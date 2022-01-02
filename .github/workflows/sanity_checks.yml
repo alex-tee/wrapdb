@@ -37,3 +37,9 @@ jobs:
       - name: Sanity Checks
         run: |
           python tools/sanity_checks.py
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: uploaded disaster log
+          path: error-files/

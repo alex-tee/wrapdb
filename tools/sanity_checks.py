@@ -45,6 +45,7 @@ PER_PROJECT_PERMITTED_FILES = {
 NO_TABS_FILES = ['meson.build', 'meson_options.txt']
 PERMITTED_KEYS = {'versions', 'dependency_names', 'program_names'}
 
+os.makedirs('error-files', exist_ok=True)
 
 class TestReleases(unittest.TestCase):
     @classmethod
@@ -251,6 +252,11 @@ class TestReleases(unittest.TestCase):
         try:
             subprocess.check_call(['meson', 'test', '-C', builddir, '--print-errorlogs'])
         except subprocess.CalledProcessError:
+            pcrefile = Path(builddir, 'subprojects', 'pcre2-10.39', 'testout8/testoutput8-8-2')
+
+            if name == 'pcre2':
+                import shutil
+                shutil.copyfile(pcrefile, 'error-files/testoutput8-8-2')
             log_file = Path(builddir, 'meson-logs', 'testlog.txt')
             print('::group::==== testlog.txt ====')
             print(log_file.read_text(encoding='utf-8'))
